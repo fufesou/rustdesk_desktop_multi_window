@@ -7,6 +7,12 @@ import 'channels.dart';
 import 'widgets/sub_drag_to_resize_area.dart';
 import 'window_controller.dart';
 
+double getDevicePixelRatio() {
+  // Subsequent version, remove this deprecated member.
+  // ignore: deprecated_member_use
+  return window.devicePixelRatio;
+}
+
 class WindowControllerMainImpl extends WindowController {
   final MethodChannel _channel = miltiWindowChannel;
 
@@ -71,6 +77,58 @@ class WindowControllerMainImpl extends WindowController {
     );
   }
 
+  /// Returns `Rect` - The bounds of the window as Object.
+  Future<Rect> getBounds() async {
+    final Map<String, dynamic> arguments = {
+      'devicePixelRatio': getDevicePixelRatio(),
+      'windowId': _id,
+    };
+    final Map<dynamic, dynamic> resultData = await _channel.invokeMethod(
+      'getBounds',
+      arguments,
+    );
+
+    return Rect.fromLTWH(
+      resultData['x'],
+      resultData['y'],
+      resultData['width'],
+      resultData['height'],
+    );
+  }
+
+  /// Resizes and moves the window to the supplied bounds.
+  Future<void> setBounds(
+    Rect? bounds, {
+    Offset? position,
+    Size? size,
+    bool animate = false,
+  }) async {
+    final Map<String, dynamic> arguments = {
+      'devicePixelRatio': getDevicePixelRatio(),
+      'x': bounds?.topLeft.dx ?? position?.dx,
+      'y': bounds?.topLeft.dy ?? position?.dy,
+      'width': bounds?.size.width ?? size?.width,
+      'height': bounds?.size.height ?? size?.height,
+      'animate': animate,
+    }..removeWhere((key, value) => value == null);
+    await _channel.invokeMethod('setBounds', arguments);
+  }
+
+  /// Returns `Size` - Contains the window's width and height.
+  Future<Size> getSize() async {
+    Rect bounds = await getBounds();
+    return bounds.size;
+  }
+
+  /// Resizes the window to `width` and `height`.
+  Future<void> setSize(Size size, {bool animate = false}) async {
+    await setBounds(
+      null,
+      size: size,
+      animate: animate,
+    );
+  }
+
   @override
   Future<void> setTitle(String title) {
     return _channel.invokeMethod('setTitle', <String, dynamic>{
@@ -94,8 +152,15 @@ class WindowControllerMainImpl extends WindowController {
 
   @override
   Future<void> setFullscreen(bool fullscreen) {
-    return _channel.invokeMethod('setFullscreen',
+    await _channel.invokeMethod('setFullscreen',
         <String, dynamic>{'windowId': _id, 'fullscreen': fullscreen});
+    // (Windows) Force refresh the app so it 's back to the correct size
+    // (see GitHub issue #311) https://github.com/leanflutter/window_manager/issues/311
+    if (Platform.isWindows) {
+      final size = await getSize();
+      setSize(size + const Offset(1, 1));
+      setSize(size);
+    }
   }
 
   @override

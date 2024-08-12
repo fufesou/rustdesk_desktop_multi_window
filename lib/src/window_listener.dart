@@ -11,8 +11,12 @@ const kWindowEventMove = 'move';
 const kWindowEventMoved = 'moved';
 const kWindowEventEnterFullScreen = 'enter-full-screen';
 const kWindowEventLeaveFullScreen = 'leave-full-screen';
+const kWindowEventDocked = 'docked';
+const kWindowEventUndocked = 'undocked';
 
-abstract class MultiWindowListener {
+enum DockSide { left, right }
+
+abstract mixin class MultiWindowListener {
 
   /// Emitted when the window is going to be closed.
   void onWindowClose() {}
@@ -56,6 +60,16 @@ abstract class MultiWindowListener {
 
   /// Emitted when the window leaves a full-screen state.
   void onWindowLeaveFullScreen() {}
+
+  /// Emitted when the window entered a docked state.
+  ///
+  /// @platforms windows
+  void onWindowDocked() {}
+
+  /// Emitted when the window leaves a docked state.
+  ///
+  /// @platforms windows
+  void onWindowUndocked() {}
 
   /// Emitted all events.
   void onWindowEvent(String eventName) {}

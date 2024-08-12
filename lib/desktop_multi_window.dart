@@ -125,6 +125,8 @@ class DesktopMultiWindow {
         kWindowEventMoved: listener.onWindowMoved,
         kWindowEventEnterFullScreen: listener.onWindowEnterFullScreen,
         kWindowEventLeaveFullScreen: listener.onWindowLeaveFullScreen,
+        kWindowEventDocked: listener.onWindowDocked,
+        kWindowEventUndocked: listener.onWindowUndocked,
       };
       funcMap[eventName]?.call();
     }
