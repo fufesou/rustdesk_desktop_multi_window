@@ -146,13 +146,33 @@ class BaseFlutterWindow: NSObject {
     // ignore
   }
     
-    func isPreventClose() -> Bool{
-        return _isPreventClose
-    }
+  func isPreventClose() -> Bool{
+      return _isPreventClose
+  }
+  
+  func setPreventClose(setPreventClose: Bool) {
+      _isPreventClose = setPreventClose
+  }
+
+  func setBackgroundColor(args: [String: Any]) {
+    let colorA = args["a"] as! Int
+    let colorR = args["r"] as! Int
+    let colorG = args["g"] as! Int
+    let colorB = args["b"] as! Int
     
-    func setPreventClose(setPreventClose: Bool) {
-        _isPreventClose = setPreventClose
+    let isTransparent: Bool = colorA == 0 && colorR == 0 && colorG == 0 && colorB == 0;
+    
+    if (isTransparent) {
+      window.backgroundColor = NSColor.clear
+    } else {
+      let rgbR = CGFloat(colorR) / 255
+      let rgbG = CGFloat(colorG) / 255
+      let rgbB = CGFloat(colorB) / 255
+      let rgbA = CGFloat(colorA) / 255
+      
+      window.backgroundColor = NSColor(red: rgbR, green: rgbG, blue: rgbB, alpha: rgbA)
     }
+  }
 }
 
 /// Add extra hooks for window

@@ -13,7 +13,7 @@
 
 class BaseFlutterWindow {
 public:
-  virtual ~BaseFlutterWindow() = default;
+  virtual ~BaseFlutterWindow();
 
   virtual WindowChannel *GetWindowChannel() = 0;
 
@@ -30,6 +30,8 @@ public:
   bool IsFullScreen();
 
   void SetFullscreen(bool fullscreen);
+
+  FlMethodResponse* setBackgroundColor(GdkRGBA rgba);
 
   void Close();
 
@@ -78,6 +80,9 @@ public:
   gboolean isFlutterButtonPressBlocked = false;
 
   bool isPreventClose = false;
+
+  GtkCssProvider* css_provider = nullptr;
+
 protected:
   virtual GtkWindow *GetWindow() = 0;
 private:

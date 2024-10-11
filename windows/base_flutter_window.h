@@ -58,6 +58,8 @@ class BaseFlutterWindow {
 
   void ShowTitlebar(bool show);
 
+  void SetBackgroundColor(const flutter::EncodableMap *args);
+
   void StartResizing(const flutter::EncodableMap *param);
 
   bool IsPreventClose();
@@ -69,6 +71,8 @@ class BaseFlutterWindow {
   void ForceChildRefresh();
 
   std::string title_bar_style_ = "normal";
+  COLORREF window_background_color_ = RGB(255, 255, 255);
+  bool is_reset_bg_ = false;
 
   virtual HWND GetWindowHandle() = 0;
 

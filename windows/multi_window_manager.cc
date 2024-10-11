@@ -278,3 +278,10 @@ bool MultiWindowManager::IsFullscreen(int64_t id) {
   }
   return false;
 }
+
+void MultiWindowManager::SetBackgroundColor(int64_t id, const flutter::EncodableMap *args) {
+  auto window = windows_.find(id);
+  if (window != windows_.end()) {
+    return window->second->SetBackgroundColor(args);
+  }
+}

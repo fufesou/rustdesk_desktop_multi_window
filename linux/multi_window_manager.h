@@ -77,6 +77,8 @@ class MultiWindowManager : public std::enable_shared_from_this<MultiWindowManage
 
   int64_t GetXID(int64_t id);
 
+  FlMethodResponse* setBackgroundColor(int64_t id, GdkRGBA rgba);
+
 private:
   std::map<int64_t, std::unique_ptr<BaseFlutterWindow>> windows_;
   pthread_rwlock_t windows_map_lock_;

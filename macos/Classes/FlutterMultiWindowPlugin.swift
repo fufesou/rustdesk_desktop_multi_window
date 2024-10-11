@@ -155,6 +155,12 @@ public class FlutterMultiWindowPlugin: NSObject, FlutterPlugin {
       let setPreventClose = arguments["setPreventClose"] as! Bool
       MultiWindowManager.shared.setPreventClose(windowId: windowId, setPreventClose: setPreventClose)
       result(nil)
+    case "setBackgroundColor":
+      let args = call.arguments as? [String: Any] ?? [:]
+      let windowId = args["windowId"] as! Int64
+      MultiWindowManager.shared.setBackgroundColor(windowId: windowId, args: args)
+      result(true)
+      break
     default:
       result(FlutterMethodNotImplemented)
     }

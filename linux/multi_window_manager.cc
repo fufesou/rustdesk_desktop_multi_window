@@ -348,3 +348,12 @@ bool MultiWindowManager::IsFullScreen(int64_t id) {
   }
   return false;
 }
+
+FlMethodResponse* MultiWindowManager::setBackgroundColor(int64_t id, GdkRGBA rgba) {
+  auto window = windows_.find(id);
+  if (window != windows_.end()) {
+    return window->second->setBackgroundColor(rgba);
+  }
+  return FL_METHOD_RESPONSE(fl_method_error_response_new(
+        "setBackgroundColor", "window not found", nullptr));;
+}

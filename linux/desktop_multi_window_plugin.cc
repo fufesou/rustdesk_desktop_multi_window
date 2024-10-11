@@ -100,6 +100,15 @@ static void desktop_multi_window_plugin_handle_method_call(
     auto isFullScreen = MultiWindowManager::Instance()->IsFullScreen(window_id);
     response = FL_METHOD_RESPONSE(
         fl_method_success_response_new(fl_value_new_bool(isFullScreen)));
+  } else if (g_strcmp0(method, "setBackgroundColor") == 0) {
+    auto *args = fl_method_call_get_args(method_call);
+    auto window_id = fl_value_get_int(fl_value_lookup_string(args, "windowId"));
+    GdkRGBA rgba;
+    rgba.red = ((double)fl_value_get_int(fl_value_lookup_string(args, "r")) / 255.0);
+    rgba.green = ((double)fl_value_get_int(fl_value_lookup_string(args, "g")) / 255.0);
+    rgba.blue = ((double)fl_value_get_int(fl_value_lookup_string(args, "b")) / 255.0);
+    rgba.alpha = ((double)fl_value_get_int(fl_value_lookup_string(args, "a")) / 255.0);
+    response = MultiWindowManager::Instance()->setBackgroundColor(window_id, rgba);
   } else if (g_strcmp0(method, "startDragging") == 0) {
     auto *args = fl_method_call_get_args(method_call);
     auto window_id = fl_value_get_int(args);

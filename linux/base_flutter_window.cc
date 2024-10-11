@@ -9,6 +9,13 @@
 BaseFlutterWindow::BaseFlutterWindow() {
 }
 
+BaseFlutterWindow::~BaseFlutterWindow() {
+  if (css_provider != nullptr) {
+    g_object_unref(css_provider);
+    css_provider = nullptr;
+  }
+}
+
 void BaseFlutterWindow::Show() {
   auto window = GetWindow();
   if (!window) {
@@ -376,4 +383,27 @@ bool BaseFlutterWindow::IsFullScreen() {
   auto window = GetWindow();
   GdkWindowState state = gdk_window_get_state(gtk_widget_get_window(GTK_WIDGET(window)));
   return state & GDK_WINDOW_STATE_FULLSCREEN;
+}
+
+FlMethodResponse* BaseFlutterWindow::setBackgroundColor(GdkRGBA rgba) {
+  auto window = GetWindow();
+  g_autofree gchar* color = gdk_rgba_to_string(&rgba);
+  g_autofree gchar* css = g_strdup_printf("window { background-color: %s }", color);
+  if (css_provider == nullptr) {
+    css_provider = gtk_css_provider_new();
+    gtk_style_context_add_provider(
+      gtk_widget_get_style_context(GTK_WIDGET(window)),
+      GTK_STYLE_PROVIDER(css_provider),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  }
+  g_autoptr(GError) error = nullptr;
+  gtk_css_provider_load_from_data(css_provider, css, -1, &error);
+
+  if (error != nullptr) {
+    return FL_METHOD_RESPONSE(fl_method_error_response_new(
+      "setBackgroundColor", error->message, nullptr));
+  }
+
+  g_autoptr(FlValue) result = fl_value_new_bool(true);
+  return FL_METHOD_RESPONSE(fl_method_success_response_new(result));
 }

@@ -305,6 +305,16 @@ void BaseFlutterWindow::SetTitleBarStyle(const flutter::EncodableMap& args) {
     // std::cout << "set title bar styled" << std::endl;
 }
 
+void BaseFlutterWindow::SetBackgroundColor(const flutter::EncodableMap *args) {
+  int colorA = std::get<int>(args->at(flutter::EncodableValue("a")));
+  int colorR = std::get<int>(args->at(flutter::EncodableValue("r")));
+  int colorG = std::get<int>(args->at(flutter::EncodableValue("g")));
+  int colorB = std::get<int>(args->at(flutter::EncodableValue("b")));
+  bool isTransparent = colorA == 0 && colorR == 0 && colorG == 0 && colorB == 0;
+  is_reset_bg_ = isTransparent;
+  window_background_color_ = RGB(colorR, colorG, colorB);
+}
+
 void BaseFlutterWindow::SetAsFrameless() {
     is_frameless_ = true;
     HWND hWnd = GetWindowHandle();

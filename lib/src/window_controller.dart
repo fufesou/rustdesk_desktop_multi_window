@@ -98,4 +98,7 @@ abstract class WindowController {
   ///
   /// This is only valid in x11/Linux.
   Future<int> getXID();
+
+  /// Sets the background color of the window.
+  Future<void> setBackgroundColor(Color color);
 }

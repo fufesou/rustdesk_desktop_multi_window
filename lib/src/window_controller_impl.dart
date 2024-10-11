@@ -191,4 +191,16 @@ class WindowControllerMainImpl extends WindowController {
     return await _channel.invokeMethod<bool>('isFullScreen', arguments) ??
         false;
   }
+
+  @override
+  Future<void> setBackgroundColor(Color color) async {
+     final Map<String, dynamic> arguments = {
+      'windowId': _id,
+      'a': color.alpha,
+      'r': color.red,
+      'g': color.green,
+      'b': color.blue,
+    };
+    await _channel.invokeMethod('setBackgroundColor', arguments);
+  }
 }

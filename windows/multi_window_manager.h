@@ -45,6 +45,8 @@ class MultiWindowManager : public std::enable_shared_from_this<MultiWindowManage
 
   void ShowTitlebar(int64_t id, bool show);
 
+  void SetBackgroundColor(int64_t id, const flutter::EncodableMap *args);
+
   bool IsFullscreen(int64_t id);
 
   void SetFullscreen(int64_t id, bool fullscreen);
